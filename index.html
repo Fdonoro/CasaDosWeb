@@ -436,7 +436,7 @@
           <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             
             <!-- Tareas de Alta Prioridad -->
-            <div class="lg:col-span-2 bg-white rounded-3xl p-6 border border-gray-100 shadow-soft">
+            <div class="bg-white rounded-3xl p-6 border border-gray-100 shadow-soft">
               <div class="flex items-center justify-between mb-4">
                 <div class="flex items-center gap-2">
                   <div class="w-8 h-8 rounded-xl bg-red-50 text-red-600 flex items-center justify-center font-bold text-sm">🔥</div>
@@ -481,95 +481,7 @@
               </div>
             </div>
 
-            <!-- Botones de Acción Rápida -->
-            <div class="bg-gradient-to-br from-white to-eucalyptus-50/50 rounded-3xl p-6 border border-eucalyptus-100 shadow-soft flex flex-col justify-between">
-              <div>
-                <h3 class="text-base font-bold text-gray-900 mb-1 flex items-center gap-2">
-                  <span>⚡</span> Accesos Rápidos
-                </h3>
-                <p class="text-xs text-gray-500 mb-5">Añade información directamente a tu cuaderno de boda:</p>
-
-                <div class="grid grid-cols-2 gap-2.5">
-                  <button 
-                    @click="openModal('space')"
-                    class="p-3 rounded-2xl bg-white hover:bg-eucalyptus-100/60 border border-gray-200 text-left transition shadow-xs group"
-                  >
-                    <div class="text-lg mb-1 group-hover:scale-110 transition">🏛️</div>
-                    <div class="text-xs font-bold text-gray-800">+ Espacio</div>
-                    <div class="text-[10px] text-gray-400">Iglesia / Finca</div>
-                  </button>
-
-                  <button 
-                    @click="openModal('vendor')"
-                    class="p-3 rounded-2xl bg-white hover:bg-eucalyptus-100/60 border border-gray-200 text-left transition shadow-xs group"
-                  >
-                    <div class="text-lg mb-1 group-hover:scale-110 transition">🤝</div>
-                    <div class="text-xs font-bold text-gray-800">+ Proveedor</div>
-                    <div class="text-[10px] text-gray-400">DJ, Foto, etc.</div>
-                  </button>
-
-                  <button 
-                    @click="openModal('task')"
-                    class="p-3 rounded-2xl bg-white hover:bg-eucalyptus-100/60 border border-gray-200 text-left transition shadow-xs group"
-                  >
-                    <div class="text-lg mb-1 group-hover:scale-110 transition">✅</div>
-                    <div class="text-xs font-bold text-gray-800">+ Tarea</div>
-                    <div class="text-[10px] text-gray-400">To-do con fecha</div>
-                  </button>
-
-                  <button 
-                    @click="openModal('guest')"
-                    class="p-3 rounded-2xl bg-white hover:bg-eucalyptus-100/60 border border-gray-200 text-left transition shadow-xs group"
-                  >
-                    <div class="text-lg mb-1 group-hover:scale-110 transition">👥</div>
-                    <div class="text-xs font-bold text-gray-800">+ Invitado</div>
-                    <div class="text-[10px] text-gray-400">Lista y mesas</div>
-                  </button>
-
-                  <button 
-                    @click="openModal('expense')"
-                    class="p-3 rounded-2xl bg-white hover:bg-eucalyptus-100/60 border border-gray-200 text-left transition shadow-xs group"
-                  >
-                    <div class="text-lg mb-1 group-hover:scale-110 transition">💸</div>
-                    <div class="text-xs font-bold text-gray-800">+ Gasto</div>
-                    <div class="text-[10px] text-gray-400">Presupuesto</div>
-                  </button>
-
-                  <button 
-                    @click="openModal('idea')"
-                    class="p-3 rounded-2xl bg-white hover:bg-eucalyptus-100/60 border border-gray-200 text-left transition shadow-xs group"
-                  >
-                    <div class="text-lg mb-1 group-hover:scale-110 transition">💡</div>
-                    <div class="text-xs font-bold text-gray-800">+ Idea / Foto</div>
-                    <div class="text-[10px] text-gray-400">Inspiración</div>
-                  </button>
-
-                  <button 
-                    @click="openModal('surprise')"
-                    class="p-3 rounded-2xl bg-white hover:bg-eucalyptus-100/60 border border-gray-200 text-left transition shadow-xs group"
-                  >
-                    <div class="text-lg mb-1 group-hover:scale-110 transition">🎁</div>
-                    <div class="text-xs font-bold text-gray-800">+ Sorpresa</div>
-                    <div class="text-[10px] text-gray-400">Regalos</div>
-                  </button>
-
-                  <button 
-                    @click="openModal('honeymoon')"
-                    class="p-3 rounded-2xl bg-white hover:bg-eucalyptus-100/60 border border-gray-200 text-left transition shadow-xs group"
-                  >
-                    <div class="text-lg mb-1 group-hover:scale-110 transition">✈️</div>
-                    <div class="text-xs font-bold text-gray-800">+ Luna de miel</div>
-                    <div class="text-[10px] text-gray-400">Viaje y planes</div>
-                  </button>
-                </div>
-              </div>
-
-              <!-- Tip o recordatorio amigable -->
-              <div class="mt-5 p-3 rounded-2xl bg-eucalyptus-100/60 border border-eucalyptus-200/50 text-[11px] text-eucalyptus-800 leading-relaxed flex items-center gap-2">
-                <span>🌿</span>
-                <span>¡Cada detalle suma para hacer vuestro día inolvidable, Fran & Paloma!</span>
-              </div>
-            </div>
+            
 
           </div>
 
@@ -1417,7 +1329,7 @@
             </div>
 
             <!-- Conmutador entre Vista Lista vs Vista Mesas -->
-            <div class="flex items-center gap-2">
+            <div class="flex flex-wrap items-center gap-2">
               <div class="bg-gray-100 p-1 rounded-2xl flex items-center">
                 <button 
                   @click="guestViewMode = 'list'"
@@ -1473,6 +1385,30 @@
             <div class="bg-white p-4 rounded-2xl border border-gray-100 shadow-xs text-center">
               <span class="text-[11px] text-purple-600 uppercase font-semibold">Alergias / Especiales</span>
               <div class="text-2xl font-bold font-wedding text-purple-700 mt-1">{{ specialMenuGuestsCount }}</div>
+            </div>
+          </div>
+
+          <!-- Recuento: Todos / Fran / Paloma -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <div v-for="sc in guestBreakdown" :key="sc.label" class="bg-white p-4 rounded-2xl border shadow-xs" :class="sc.border">
+              <div class="flex items-center justify-between">
+                <span class="text-xs uppercase font-bold tracking-wider" :class="sc.text">{{ sc.emoji }} {{ sc.label }}</span>
+                <span class="text-3xl font-bold font-wedding text-gray-900">{{ sc.total }}</span>
+              </div>
+              <div class="mt-3 space-y-2">
+                <div v-for="ag in sc.ages" :key="ag.label" class="rounded-xl bg-gray-50 border border-gray-100 p-2.5">
+                  <div class="flex items-center justify-between text-xs font-semibold text-gray-700">
+                    <span>{{ ag.emoji }} {{ ag.label }}</span>
+                    <span class="text-base font-bold text-gray-900">{{ ag.total }}</span>
+                  </div>
+                  <div class="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-0.5 text-[11px] text-gray-600">
+                    <span>👩 {{ ag.mujeres }} mujeres</span>
+                    <span>👨 {{ ag.hombres }} hombres</span>
+                    <span v-if="ag.sin > 0" class="text-gray-400">❔ {{ ag.sin }} sin indicar</span>
+                  </div>
+                </div>
+              </div>
+              <p v-if="sc.note" class="text-[10px] text-gray-400 mt-2">{{ sc.note }}</p>
             </div>
           </div>
 
@@ -1532,6 +1468,9 @@
                   <tr>
                     <th class="py-3 px-4">Nombre Completo</th>
                     <th class="py-3 px-4">Lado</th>
+                    <th class="py-3 px-4">Grupo</th>
+                    <th class="py-3 px-4">Edad</th>
+                    <th class="py-3 px-4">Género</th>
                     <th class="py-3 px-4">Menú / Alergias</th>
                     <th class="py-3 px-4">Mesa Asignada</th>
                     <th class="py-3 px-4 text-center">Estado</th>
@@ -1545,6 +1484,18 @@
                     </td>
                     <td class="py-3 px-4">
                       <span :class="getPersonBadgeClass(guest.side)" class="px-2 py-0.5 rounded-full text-[10px] font-bold">{{ guest.side === 'Paloma' ? '👩 Paloma' : guest.side === 'Fran' ? '🧔 Fran' : '💍 Común' }}</span>
+                    </td>
+                    <td class="py-3 px-4">
+                      <span v-if="guest.group" :class="guest.group === 'Familia' ? 'bg-rose-50 text-rose-700 border border-rose-200' : 'bg-indigo-50 text-indigo-700 border border-indigo-200'" class="px-2 py-0.5 rounded-full text-[10px] font-bold">{{ guest.group === 'Familia' ? '👪 Familia' : '🥂 Amigos' }}</span>
+                      <span v-else class="text-gray-300">—</span>
+                    </td>
+                    <td class="py-3 px-4">
+                      <span v-if="guest.ageGroup" :class="guest.ageGroup === 'Niño' ? 'bg-yellow-50 text-yellow-700 border border-yellow-200' : 'bg-gray-100 text-gray-600 border border-gray-200'" class="px-2 py-0.5 rounded-full text-[10px] font-bold">{{ guest.ageGroup === 'Niño' ? '🧒 Niño' : '🧑 Adulto' }}</span>
+                      <span v-else class="text-gray-300">—</span>
+                    </td>
+                    <td class="py-3 px-4">
+                      <span v-if="guest.gender" class="text-xs text-gray-700">{{ guest.gender === 'Mujer' ? '👩 Mujer' : '👨 Hombre' }}</span>
+                      <span v-else class="text-gray-300">—</span>
                     </td>
                     <td class="py-3 px-4">
                       <span 
@@ -2458,6 +2409,33 @@
                 <option value="Fran">De Fran 🧔</option>
                 <option value="Común">Común / De ambos 💍</option>
               </select>
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-gray-700 mb-1">Familia o amigos</label>
+              <select v-model="formGuest.group" class="form-input">
+                <option value="">(Sin indicar)</option>
+                <option value="Familia">Familia 👪</option>
+                <option value="Amigos">Amigos 🥂</option>
+              </select>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs font-semibold text-gray-700 mb-1">Adulto o niño</label>
+                <select v-model="formGuest.ageGroup" class="form-input">
+                  <option value="Adulto">Adulto 🧑</option>
+                  <option value="Niño">Niño 🧒</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-gray-700 mb-1">Género</label>
+                <select v-model="formGuest.gender" class="form-input">
+                  <option value="">(Sin indicar)</option>
+                  <option value="Mujer">Mujer 👩</option>
+                  <option value="Hombre">Hombre 👨</option>
+                </select>
+              </div>
             </div>
 
             <div class="grid grid-cols-2 gap-3">
@@ -3452,7 +3430,7 @@
         const formSpace = ref({ name: '', category: 'ceremonia', status: 'Pendiente', price: null, deposit: null, paidBy: 'Ambos', address: '', phone: '', pros: '', cons: '', notes: '', imageUrl: '' });
         const formVendor = ref({ name: '', category: 'Fotógrafo', status: 'Presupuestado', price: null, deposit: null, paidBy: 'Ambos', phone: '', website: '', notes: '', imageUrl: '' });
         const formTask = ref({ name: '', category: 'General', priority: 'Media', assignedTo: 'Ambos', dueDate: '', status: 'Pendiente', notes: '' });
-        const formGuest = ref({ fullName: '', menuAllergies: '', status: 'Pendiente', side: 'Común', tableId: '', notes: '' });
+        const formGuest = ref({ fullName: '', menuAllergies: '', status: 'Pendiente', side: 'Común', group: '', ageGroup: 'Adulto', gender: '', tableId: '', notes: '' });
         const formTable = ref({ name: '', capacity: 10, notes: '' });
         const formExpense = ref({ title: '', category: 'Varios', amount: null, paid: null, paidBy: 'Ambos', status: 'Pendiente', notes: '' });
         const formIdea = ref({ title: '', category: 'Decoración', link: '', description: '', imageUrl: '' });
@@ -3468,7 +3446,7 @@
           if (type === 'space') formSpace.value = { name: '', category: 'ceremonia', status: 'Pendiente', price: null, deposit: null, paidBy: 'Ambos', address: '', phone: '', pros: '', cons: '', notes: '', imageUrl: '' };
           if (type === 'vendor') formVendor.value = { name: '', category: 'Fotógrafo', status: 'Presupuestado', price: null, deposit: null, paidBy: 'Ambos', phone: '', website: '', notes: '', imageUrl: '' };
           if (type === 'task') formTask.value = { name: '', category: 'General', priority: 'Media', assignedTo: 'Ambos', dueDate: '', status: 'Pendiente', notes: '' };
-          if (type === 'guest') formGuest.value = { fullName: '', menuAllergies: '', status: 'Pendiente', side: 'Común', tableId: '', notes: '' };
+          if (type === 'guest') formGuest.value = { fullName: '', menuAllergies: '', status: 'Pendiente', side: 'Común', group: '', ageGroup: 'Adulto', gender: '', tableId: '', notes: '' };
           if (type === 'table') formTable.value = { name: '', capacity: 10, notes: '' };
           if (type === 'expense') formExpense.value = { title: '', category: 'Varios', amount: null, paid: null, paidBy: 'Ambos', status: 'Pendiente', notes: '' };
           if (type === 'idea') formIdea.value = { title: '', category: 'Decoración', link: '', description: '', imageUrl: '' };
@@ -4068,6 +4046,39 @@
           }, 3500);
         };
 
+        // --- Invitados: recuento Todos / Fran / Paloma > adultos y niños > género ---
+        const guestBreakdown = computed(() => {
+          const scopes = [
+            { label: 'Todos', emoji: '👥', text: 'text-eucalyptus-700', border: 'border-eucalyptus-200', match: () => true },
+            { label: 'Fran', emoji: '🧔', text: 'text-sky-700', border: 'border-sky-200', match: g => g.side === 'Fran' },
+            { label: 'Paloma', emoji: '👩', text: 'text-pink-700', border: 'border-pink-200', match: g => g.side === 'Paloma' },
+          ];
+          const ageGroups = [
+            { key: 'Adulto', label: 'Adultos', emoji: '🧑' },
+            { key: 'Niño', label: 'Niños', emoji: '🧒' },
+            { key: '', label: 'Sin indicar edad', emoji: '❔' },
+          ];
+          return scopes.map(sc => {
+            const list = guests.value.filter(sc.match);
+            const ages = ageGroups.map(ag => {
+              const sub = list.filter(g => (g.ageGroup || '') === ag.key);
+              return {
+                ...ag,
+                total: sub.length,
+                mujeres: sub.filter(g => g.gender === 'Mujer').length,
+                hombres: sub.filter(g => g.gender === 'Hombre').length,
+                sin: sub.filter(g => g.gender !== 'Mujer' && g.gender !== 'Hombre').length,
+              };
+            }).filter(ag => ag.key !== '' || ag.total > 0);
+            const comunes = guests.value.filter(g => g.side !== 'Fran' && g.side !== 'Paloma').length;
+            return {
+              label: sc.label, emoji: sc.emoji, text: sc.text, border: sc.border,
+              total: list.length, ages,
+              note: sc.label === 'Todos' && comunes > 0 ? `Incluye ${comunes} comunes (sin lado de Fran ni de Paloma)` : ''
+            };
+          });
+        });
+
         // --- Invitados: lado Paloma / Fran ---
         const guestsPalomaCount = computed(() => guests.value.filter(g => g.side === 'Paloma').length);
         const guestsFranCount = computed(() => guests.value.filter(g => g.side === 'Fran').length);
@@ -4297,6 +4308,7 @@
           surpriseRecipientFilter, surpriseStatusFilter, filteredSurprises, surpriseStats,
           honeymoonTypeFilter, honeymoonStatusFilter, filteredHoneymoon, honeymoonStats,
           getHoneymoonEmoji, formatDateRange, getPersonBadgeClass,
+          guestBreakdown,
           guestNameFilter, guestTableFilter, clearGuestFilters, taskSearch, getCategoryRank,
           getRankBadge
         };
