@@ -1426,17 +1426,6 @@
                 <i data-lucide="search" class="w-4 h-4 text-gray-400 absolute left-3 top-2.5"></i>
               </div>
 
-              <!-- Filtro Lado (Paloma / Fran) -->
-              <div class="flex items-center gap-1 text-xs">
-                <span class="text-gray-400 font-medium">Lado:</span>
-                <select v-model="guestSideFilter" class="bg-gray-50 border border-gray-200 rounded-lg px-2 py-1 text-gray-700 outline-none">
-                  <option value="Todos">Todos</option>
-                  <option value="Paloma">De Paloma 👩</option>
-                  <option value="Fran">De Fran 🧔</option>
-                  <option value="Común">Comunes 💍</option>
-                </select>
-              </div>
-
               <!-- Filtro Estado -->
               <div class="flex items-center gap-1.5 text-xs overflow-x-auto pb-1">
                 <button 
@@ -1451,14 +1440,27 @@
               </div>
             </div>
 
-            <!-- Filtros por campo -->
-            <div class="grid grid-cols-2 gap-2 sm:max-w-md text-xs">
-                                          <select v-model="guestTableFilter" class="form-input">
+            <!-- Filtros: lado y mesa -->
+            <div class="flex flex-wrap items-center gap-2 text-xs">
+              <span class="text-gray-400 font-medium">Lado:</span>
+              <button 
+                v-for="sd in [{ v: 'Todos', l: 'Todos' }, { v: 'Paloma', l: '👩 De Paloma' }, { v: 'Fran', l: '🧔 De Fran' }, { v: 'Común', l: '💍 Comunes' }]"
+                :key="sd.v"
+                type="button"
+                @click="guestSideFilter = sd.v"
+                :class="guestSideFilter === sd.v ? 'bg-eucalyptus-700 text-white font-semibold' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'"
+                class="px-2.5 py-1 rounded-lg transition whitespace-nowrap"
+              >
+                {{ sd.l }}
+              </button>
+
+              <select v-model="guestTableFilter" class="form-input" style="width:auto">
                 <option value="Todas">Todas las mesas</option>
                 <option value="none">Sin mesa</option>
                 <option v-for="t in tables" :key="t.id" :value="t.id">{{ t.name }}</option>
               </select>
-                            <button type="button" @click="clearGuestFilters" class="px-3 py-2 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold">Limpiar filtros</button>
+
+              <button type="button" @click="clearGuestFilters" class="px-3 py-1.5 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold">Limpiar filtros</button>
             </div>
 
             <!-- Tabla de Invitados -->
