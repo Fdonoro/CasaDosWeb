@@ -583,10 +583,10 @@
               class="bg-white rounded-3xl border border-gray-100 shadow-soft hover:shadow-card transition flex flex-col overflow-hidden group"
             >
               <!-- Foto con badge de Estado y Ranking -->
-              <div class="relative h-48 w-full bg-gray-100 overflow-hidden cursor-pointer" @click="space.imageUrl ? openLightbox(space.imageUrl, space.name) : null">
+              <div class="relative h-48 w-full bg-gray-100 overflow-hidden cursor-pointer" @click="photosOf(space).length ? openGallery(space, space.name) : null">
                 <img 
-                  v-if="space.imageUrl" 
-                  :src="space.imageUrl" 
+                  v-if="coverOf(space)" 
+                  :src="coverOf(space)" 
                   :alt="space.name" 
                   class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
                 />
@@ -594,6 +594,8 @@
                   <span class="text-4xl mb-1">{{ space.category === 'ceremonia' ? '⛪' : '🏡' }}</span>
                   <span class="text-[11px] font-medium text-gray-400">Sin foto</span>
                 </div>
+
+                <span v-if="photosOf(space).length > 1" class="absolute bottom-3 right-3 z-10 pointer-events-none px-2 py-0.5 rounded-full bg-black/60 text-white text-[10px] font-bold backdrop-blur-sm">📷 {{ photosOf(space).length }}</span>
 
                 <!-- Badge de Tipo & Ranking -->
                 <div class="absolute top-3 left-3 flex items-center gap-1.5">
@@ -818,12 +820,13 @@
             >
               <!-- Cabecera de Tarjeta con Imagen o Banner -->
               <div class="relative h-36 bg-gradient-to-r from-eucalyptus-50 to-mint-50 flex items-center justify-center overflow-hidden">
+                <span v-if="photosOf(vendor).length > 1" class="absolute bottom-2 right-2 z-10 pointer-events-none px-2 py-0.5 rounded-full bg-black/60 text-white text-[10px] font-bold backdrop-blur-sm">📷 {{ photosOf(vendor).length }}</span>
                 <img 
-                  v-if="vendor.imageUrl" 
-                  :src="vendor.imageUrl" 
+                  v-if="coverOf(vendor)" 
+                  :src="coverOf(vendor)" 
                   :alt="vendor.name" 
                   class="w-full h-full object-cover cursor-pointer"
-                  @click="openLightbox(vendor.imageUrl, vendor.name)"
+                  @click="openGallery(vendor, vendor.name)"
                 />
                 <div v-else class="flex flex-col items-center justify-center text-eucalyptus-600">
                   <span class="text-3xl mb-1">{{ getCategoryEmoji(vendor.category) }}</span>
@@ -1395,6 +1398,7 @@
                 <span class="text-xs uppercase font-bold tracking-wider" :class="sc.text">{{ sc.emoji }} {{ sc.label }}</span>
                 <span class="text-3xl font-bold font-wedding text-gray-900">{{ sc.total }}</span>
               </div>
+              <p class="mt-1 text-[11px] font-semibold" :class="sc.dudas > 0 ? 'text-orange-600' : 'text-gray-400'">🤔 {{ sc.dudas }} con dudas de invitar</p>
               <div class="mt-3 space-y-2">
                 <div v-for="ag in sc.ages" :key="ag.label" class="rounded-xl bg-gray-50 border border-gray-100 p-2.5">
                   <div class="flex items-center justify-between text-xs font-semibold text-gray-700">
@@ -1405,6 +1409,7 @@
                     <span>👩 {{ ag.mujeres }} mujeres</span>
                     <span>👨 {{ ag.hombres }} hombres</span>
                     <span v-if="ag.sin > 0" class="text-gray-400">❔ {{ ag.sin }} sin indicar</span>
+                    <span v-if="ag.dudas > 0" class="text-orange-600 font-semibold">🤔 {{ ag.dudas }} con dudas</span>
                   </div>
                 </div>
               </div>
@@ -1749,15 +1754,16 @@
             >
               <!-- Foto con visualización completa / Lightbox -->
               <div 
-                v-if="idea.imageUrl" 
+                v-if="photosOf(idea).length" 
                 class="relative h-56 bg-gray-100 overflow-hidden cursor-pointer"
-                @click="openLightbox(idea.imageUrl, idea.title)"
+                @click="openGallery(idea, idea.title)"
               >
                 <img 
-                  :src="idea.imageUrl" 
+                  :src="coverOf(idea)" 
                   :alt="idea.title" 
                   class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
                 />
+                <span v-if="photosOf(idea).length > 1" class="absolute bottom-3 right-3 z-10 pointer-events-none px-2 py-0.5 rounded-full bg-black/60 text-white text-[10px] font-bold backdrop-blur-sm">📷 {{ photosOf(idea).length }}</span>
                 <div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition flex items-center justify-center text-white text-xs font-medium">
                   <span class="bg-black/60 px-3 py-1.5 rounded-full backdrop-blur-sm flex items-center gap-1.5">
                     <i data-lucide="zoom-in" class="w-3.5 h-3.5"></i>
@@ -1922,7 +1928,8 @@
               class="bg-white rounded-3xl border border-gray-100 shadow-soft hover:shadow-card transition flex flex-col overflow-hidden"
             >
               <div class="relative h-44 bg-gradient-to-r from-eucalyptus-50 to-mint-50 flex items-center justify-center overflow-hidden">
-                <img v-if="s.imageUrl" :src="s.imageUrl" :alt="s.title" class="w-full h-full object-cover cursor-pointer" @click="openLightbox(s.imageUrl, s.title)" />
+                <span v-if="photosOf(s).length > 1" class="absolute bottom-3 right-3 z-10 pointer-events-none px-2 py-0.5 rounded-full bg-black/60 text-white text-[10px] font-bold backdrop-blur-sm">📷 {{ photosOf(s).length }}</span>
+                <img v-if="coverOf(s)" :src="coverOf(s)" :alt="s.title" class="w-full h-full object-cover cursor-pointer" @click="openGallery(s, s.title)" />
                 <span v-else class="text-5xl">🎁</span>
                 <div class="absolute top-3 left-3">
                   <span class="px-2.5 py-1 rounded-full text-[10px] font-bold backdrop-blur-md bg-black/50 text-white uppercase tracking-wider">
@@ -2079,7 +2086,8 @@
               class="bg-white rounded-3xl border border-gray-100 shadow-soft hover:shadow-card transition flex flex-col overflow-hidden"
             >
               <div class="relative h-44 bg-gradient-to-r from-eucalyptus-50 to-mint-50 flex items-center justify-center overflow-hidden">
-                <img v-if="h.imageUrl" :src="h.imageUrl" :alt="h.title" class="w-full h-full object-cover cursor-pointer" @click="openLightbox(h.imageUrl, h.title)" />
+                <span v-if="photosOf(h).length > 1" class="absolute bottom-3 right-3 z-10 pointer-events-none px-2 py-0.5 rounded-full bg-black/60 text-white text-[10px] font-bold backdrop-blur-sm">📷 {{ photosOf(h).length }}</span>
+                <img v-if="coverOf(h)" :src="coverOf(h)" :alt="h.title" class="w-full h-full object-cover cursor-pointer" @click="openGallery(h, h.title)" />
                 <span v-else class="text-5xl">{{ getHoneymoonEmoji(h.type) }}</span>
                 <div class="absolute top-3 left-3">
                   <span class="px-2.5 py-1 rounded-full text-[10px] font-bold backdrop-blur-md bg-black/50 text-white uppercase tracking-wider">{{ h.type }}</span>
@@ -2259,11 +2267,20 @@
 
             <!-- Input de Imagen (Subida a Firebase Storage) -->
             <div>
-              <label class="block text-xs font-semibold text-gray-700 mb-1">Foto del Espacio</label>
-              <input type="file" accept="image/*" @change="handleFileUpload($event, 'space')" class="text-xs text-gray-500 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-eucalyptus-50 file:text-eucalyptus-700 hover:file:bg-eucalyptus-100" />
-              <div v-if="imagePreview || formSpace.imageUrl" class="mt-2 relative w-24 h-24 rounded-xl overflow-hidden border border-gray-200">
-                <img :src="imagePreview || formSpace.imageUrl" class="w-full h-full object-cover" />
+              <label class="block text-xs font-semibold text-gray-700 mb-1">Fotos (todas las que quieras)</label>
+              <input type="file" accept="image/*" multiple @change="handlePhotosSelected($event)" class="text-xs text-gray-500 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-eucalyptus-50 file:text-eucalyptus-700 hover:file:bg-eucalyptus-100" />
+              <div v-if="existingPhotos.length || pendingPhotos.length" class="mt-2 grid grid-cols-4 sm:grid-cols-5 gap-2">
+                <div v-for="ph in existingPhotos" :key="ph.id" class="relative aspect-square rounded-xl overflow-hidden border border-gray-200">
+                  <img :src="ph.url" class="w-full h-full object-cover" />
+                  <button type="button" @click="removeExistingPhoto(ph)" class="absolute top-1 right-1 w-5 h-5 rounded-full bg-black/60 text-white text-[10px] leading-none flex items-center justify-center hover:bg-red-600" title="Quitar foto">✕</button>
+                </div>
+                <div v-for="(pp, i) in pendingPhotos" :key="'new' + i" class="relative aspect-square rounded-xl overflow-hidden border-2 border-eucalyptus-300">
+                  <img :src="pp.preview" class="w-full h-full object-cover" />
+                  <span class="absolute bottom-1 left-1 px-1.5 py-0.5 rounded bg-eucalyptus-600 text-white text-[9px] font-bold">Nueva</span>
+                  <button type="button" @click="removePendingPhoto(i)" class="absolute top-1 right-1 w-5 h-5 rounded-full bg-black/60 text-white text-[10px] leading-none flex items-center justify-center hover:bg-red-600" title="Quitar foto">✕</button>
+                </div>
               </div>
+              <p v-if="pendingPhotos.length" class="text-[10px] text-gray-400 mt-1">Las fotos nuevas se guardan al pulsar Guardar.</p>
             </div>
           </div>
 
@@ -2337,11 +2354,20 @@
             </div>
 
             <div>
-              <label class="block text-xs font-semibold text-gray-700 mb-1">Foto o Dossier</label>
-              <input type="file" accept="image/*" @change="handleFileUpload($event, 'vendor')" class="text-xs text-gray-500 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-eucalyptus-50 file:text-eucalyptus-700 hover:file:bg-eucalyptus-100" />
-              <div v-if="imagePreview || formVendor.imageUrl" class="mt-2 relative w-24 h-24 rounded-xl overflow-hidden border border-gray-200">
-                <img :src="imagePreview || formVendor.imageUrl" class="w-full h-full object-cover" />
+              <label class="block text-xs font-semibold text-gray-700 mb-1">Fotos (todas las que quieras)</label>
+              <input type="file" accept="image/*" multiple @change="handlePhotosSelected($event)" class="text-xs text-gray-500 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-eucalyptus-50 file:text-eucalyptus-700 hover:file:bg-eucalyptus-100" />
+              <div v-if="existingPhotos.length || pendingPhotos.length" class="mt-2 grid grid-cols-4 sm:grid-cols-5 gap-2">
+                <div v-for="ph in existingPhotos" :key="ph.id" class="relative aspect-square rounded-xl overflow-hidden border border-gray-200">
+                  <img :src="ph.url" class="w-full h-full object-cover" />
+                  <button type="button" @click="removeExistingPhoto(ph)" class="absolute top-1 right-1 w-5 h-5 rounded-full bg-black/60 text-white text-[10px] leading-none flex items-center justify-center hover:bg-red-600" title="Quitar foto">✕</button>
+                </div>
+                <div v-for="(pp, i) in pendingPhotos" :key="'new' + i" class="relative aspect-square rounded-xl overflow-hidden border-2 border-eucalyptus-300">
+                  <img :src="pp.preview" class="w-full h-full object-cover" />
+                  <span class="absolute bottom-1 left-1 px-1.5 py-0.5 rounded bg-eucalyptus-600 text-white text-[9px] font-bold">Nueva</span>
+                  <button type="button" @click="removePendingPhoto(i)" class="absolute top-1 right-1 w-5 h-5 rounded-full bg-black/60 text-white text-[10px] leading-none flex items-center justify-center hover:bg-red-600" title="Quitar foto">✕</button>
+                </div>
               </div>
+              <p v-if="pendingPhotos.length" class="text-[10px] text-gray-400 mt-1">Las fotos nuevas se guardan al pulsar Guardar.</p>
             </div>
           </div>
 
@@ -2571,11 +2597,20 @@
             </div>
 
             <div>
-              <label class="block text-xs font-semibold text-gray-700 mb-1">Foto de Inspiración</label>
-              <input type="file" accept="image/*" @change="handleFileUpload($event, 'idea')" class="text-xs text-gray-500 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-eucalyptus-50 file:text-eucalyptus-700 hover:file:bg-eucalyptus-100" />
-              <div v-if="imagePreview || formIdea.imageUrl" class="mt-2 relative w-32 h-32 rounded-xl overflow-hidden border border-gray-200">
-                <img :src="imagePreview || formIdea.imageUrl" class="w-full h-full object-cover" />
+              <label class="block text-xs font-semibold text-gray-700 mb-1">Fotos (todas las que quieras)</label>
+              <input type="file" accept="image/*" multiple @change="handlePhotosSelected($event)" class="text-xs text-gray-500 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-eucalyptus-50 file:text-eucalyptus-700 hover:file:bg-eucalyptus-100" />
+              <div v-if="existingPhotos.length || pendingPhotos.length" class="mt-2 grid grid-cols-4 sm:grid-cols-5 gap-2">
+                <div v-for="ph in existingPhotos" :key="ph.id" class="relative aspect-square rounded-xl overflow-hidden border border-gray-200">
+                  <img :src="ph.url" class="w-full h-full object-cover" />
+                  <button type="button" @click="removeExistingPhoto(ph)" class="absolute top-1 right-1 w-5 h-5 rounded-full bg-black/60 text-white text-[10px] leading-none flex items-center justify-center hover:bg-red-600" title="Quitar foto">✕</button>
+                </div>
+                <div v-for="(pp, i) in pendingPhotos" :key="'new' + i" class="relative aspect-square rounded-xl overflow-hidden border-2 border-eucalyptus-300">
+                  <img :src="pp.preview" class="w-full h-full object-cover" />
+                  <span class="absolute bottom-1 left-1 px-1.5 py-0.5 rounded bg-eucalyptus-600 text-white text-[9px] font-bold">Nueva</span>
+                  <button type="button" @click="removePendingPhoto(i)" class="absolute top-1 right-1 w-5 h-5 rounded-full bg-black/60 text-white text-[10px] leading-none flex items-center justify-center hover:bg-red-600" title="Quitar foto">✕</button>
+                </div>
               </div>
+              <p v-if="pendingPhotos.length" class="text-[10px] text-gray-400 mt-1">Las fotos nuevas se guardan al pulsar Guardar.</p>
             </div>
           </div>
 
@@ -2660,11 +2695,20 @@
             </div>
 
             <div>
-              <label class="block text-xs font-semibold text-gray-700 mb-1">Foto</label>
-              <input type="file" accept="image/*" @change="handleFileUpload($event, 'surprise')" class="text-xs text-gray-500 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-eucalyptus-50 file:text-eucalyptus-700 hover:file:bg-eucalyptus-100" />
-              <div v-if="imagePreview || formSurprise.imageUrl" class="mt-2 relative w-32 h-32 rounded-xl overflow-hidden border border-gray-200">
-                <img :src="imagePreview || formSurprise.imageUrl" class="w-full h-full object-cover" />
+              <label class="block text-xs font-semibold text-gray-700 mb-1">Fotos (todas las que quieras)</label>
+              <input type="file" accept="image/*" multiple @change="handlePhotosSelected($event)" class="text-xs text-gray-500 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-eucalyptus-50 file:text-eucalyptus-700 hover:file:bg-eucalyptus-100" />
+              <div v-if="existingPhotos.length || pendingPhotos.length" class="mt-2 grid grid-cols-4 sm:grid-cols-5 gap-2">
+                <div v-for="ph in existingPhotos" :key="ph.id" class="relative aspect-square rounded-xl overflow-hidden border border-gray-200">
+                  <img :src="ph.url" class="w-full h-full object-cover" />
+                  <button type="button" @click="removeExistingPhoto(ph)" class="absolute top-1 right-1 w-5 h-5 rounded-full bg-black/60 text-white text-[10px] leading-none flex items-center justify-center hover:bg-red-600" title="Quitar foto">✕</button>
+                </div>
+                <div v-for="(pp, i) in pendingPhotos" :key="'new' + i" class="relative aspect-square rounded-xl overflow-hidden border-2 border-eucalyptus-300">
+                  <img :src="pp.preview" class="w-full h-full object-cover" />
+                  <span class="absolute bottom-1 left-1 px-1.5 py-0.5 rounded bg-eucalyptus-600 text-white text-[9px] font-bold">Nueva</span>
+                  <button type="button" @click="removePendingPhoto(i)" class="absolute top-1 right-1 w-5 h-5 rounded-full bg-black/60 text-white text-[10px] leading-none flex items-center justify-center hover:bg-red-600" title="Quitar foto">✕</button>
+                </div>
               </div>
+              <p v-if="pendingPhotos.length" class="text-[10px] text-gray-400 mt-1">Las fotos nuevas se guardan al pulsar Guardar.</p>
             </div>
           </div>
 
@@ -2743,11 +2787,20 @@
             </div>
 
             <div>
-              <label class="block text-xs font-semibold text-gray-700 mb-1">Foto</label>
-              <input type="file" accept="image/*" @change="handleFileUpload($event, 'honeymoon')" class="text-xs text-gray-500 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-eucalyptus-50 file:text-eucalyptus-700 hover:file:bg-eucalyptus-100" />
-              <div v-if="imagePreview || formHoneymoon.imageUrl" class="mt-2 relative w-32 h-32 rounded-xl overflow-hidden border border-gray-200">
-                <img :src="imagePreview || formHoneymoon.imageUrl" class="w-full h-full object-cover" />
+              <label class="block text-xs font-semibold text-gray-700 mb-1">Fotos (todas las que quieras)</label>
+              <input type="file" accept="image/*" multiple @change="handlePhotosSelected($event)" class="text-xs text-gray-500 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-eucalyptus-50 file:text-eucalyptus-700 hover:file:bg-eucalyptus-100" />
+              <div v-if="existingPhotos.length || pendingPhotos.length" class="mt-2 grid grid-cols-4 sm:grid-cols-5 gap-2">
+                <div v-for="ph in existingPhotos" :key="ph.id" class="relative aspect-square rounded-xl overflow-hidden border border-gray-200">
+                  <img :src="ph.url" class="w-full h-full object-cover" />
+                  <button type="button" @click="removeExistingPhoto(ph)" class="absolute top-1 right-1 w-5 h-5 rounded-full bg-black/60 text-white text-[10px] leading-none flex items-center justify-center hover:bg-red-600" title="Quitar foto">✕</button>
+                </div>
+                <div v-for="(pp, i) in pendingPhotos" :key="'new' + i" class="relative aspect-square rounded-xl overflow-hidden border-2 border-eucalyptus-300">
+                  <img :src="pp.preview" class="w-full h-full object-cover" />
+                  <span class="absolute bottom-1 left-1 px-1.5 py-0.5 rounded bg-eucalyptus-600 text-white text-[9px] font-bold">Nueva</span>
+                  <button type="button" @click="removePendingPhoto(i)" class="absolute top-1 right-1 w-5 h-5 rounded-full bg-black/60 text-white text-[10px] leading-none flex items-center justify-center hover:bg-red-600" title="Quitar foto">✕</button>
+                </div>
               </div>
+              <p v-if="pendingPhotos.length" class="text-[10px] text-gray-400 mt-1">Las fotos nuevas se guardan al pulsar Guardar.</p>
             </div>
           </div>
 
@@ -2832,15 +2885,26 @@
     <!-- LIGHTBOX PARA VER FOTOS A TAMAÑO COMPLETO                                  -->
     <!-- ========================================================================= -->
     <div v-if="lightboxImage" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-md" @click="lightboxImage = null">
-      <div class="relative max-w-4xl max-h-[90vh] flex flex-col items-center" @click.stop>
+      <div class="relative w-full max-w-4xl max-h-[92vh] flex flex-col items-center" @click.stop>
         <button 
           @click="lightboxImage = null"
           class="absolute -top-12 right-0 p-2 text-white hover:text-gray-300"
         >
           <i data-lucide="x" class="w-6 h-6"></i>
         </button>
-        <img :src="lightboxImage" class="max-w-full max-h-[80vh] rounded-2xl object-contain shadow-2xl" />
-        <p v-if="lightboxTitle" class="text-white text-sm font-medium mt-3 font-wedding">{{ lightboxTitle }}</p>
+        <div class="relative flex items-center justify-center w-full">
+          <button v-if="galleryImages.length > 1" @click="galleryGo(-1)" class="absolute left-1 z-10 w-10 h-10 rounded-full bg-black/50 hover:bg-black/70 text-white text-2xl leading-none flex items-center justify-center" title="Anterior">‹</button>
+          <img :src="lightboxImage" class="max-w-full max-h-[70vh] rounded-2xl object-contain shadow-2xl" />
+          <button v-if="galleryImages.length > 1" @click="galleryGo(1)" class="absolute right-1 z-10 w-10 h-10 rounded-full bg-black/50 hover:bg-black/70 text-white text-2xl leading-none flex items-center justify-center" title="Siguiente">›</button>
+        </div>
+        <p v-if="lightboxTitle || galleryImages.length > 1" class="text-white text-sm font-medium mt-3 font-wedding">
+          {{ lightboxTitle }}<span v-if="galleryImages.length > 1" class="text-white/70 font-sans text-xs"> · {{ galleryIndex + 1 }} / {{ galleryImages.length }}</span>
+        </p>
+        <div v-if="galleryImages.length > 1" class="mt-3 flex gap-2 overflow-x-auto max-w-full pb-1">
+          <img v-for="(u, i) in galleryImages" :key="i" :src="u" @click="galleryIndex = i; lightboxImage = u"
+            :class="galleryIndex === i ? 'ring-2 ring-white opacity-100' : 'opacity-50 hover:opacity-90'"
+            class="w-14 h-14 object-cover rounded-lg cursor-pointer shrink-0 transition" />
+        </div>
       </div>
     </div>
 
@@ -3002,6 +3066,27 @@
         const guestSearch = ref('');
         const guestStatusFilter = ref('Todos');
         const guestSideFilter = ref('Todos');
+        // Fotos ilimitadas: cada foto es su propio documento (colección casados_photos)
+        // para no tropezar con el límite de 1MB por documento de Firestore.
+        const photos = ref((() => { try { return JSON.parse(localStorage.getItem('casados_photos')) || []; } catch (e) { return []; } })());
+        const pendingPhotos = ref([]);
+        const existingPhotos = ref([]);
+        const removedPhotoIds = ref([]);
+        const removeLegacyPhoto = ref(false);
+        const galleryImages = ref([]);
+        const galleryIndex = ref(0);
+        const resetPhotoState = () => {
+          pendingPhotos.value = []; existingPhotos.value = []; removedPhotoIds.value = []; removeLegacyPhoto.value = false;
+        };
+        const photosOf = (item) => {
+          if (!item) return [];
+          const own = photos.value
+            .filter(ph => ph.ownerId === item.id)
+            .sort((a, b) => (a.order || 0) - (b.order || 0))
+            .map(ph => ({ id: ph.id, url: ph.url, legacy: false }));
+          return item.imageUrl ? [{ id: 'legacy', url: item.imageUrl, legacy: true }, ...own] : own;
+        };
+        const coverOf = (item) => { const l = photosOf(item); return l.length ? l[0].url : ''; };
         const guestNameFilter = ref('');
         const guestTableFilter = ref('Todas');
         const taskSearch = ref('');
@@ -3021,7 +3106,20 @@
         const lightboxImage = ref(null);
         const lightboxTitle = ref('');
 
+        const openGallery = (item, title = '') => {
+          const list = photosOf(item).map(ph => ph.url);
+          if (!list.length) return;
+          galleryImages.value = list; galleryIndex.value = 0;
+          lightboxImage.value = list[0]; lightboxTitle.value = title;
+        };
+        const galleryGo = (d) => {
+          const n = galleryImages.value.length;
+          if (n < 2) return;
+          galleryIndex.value = (galleryIndex.value + d + n) % n;
+          lightboxImage.value = galleryImages.value[galleryIndex.value];
+        };
         const openLightbox = (url, title = '') => {
+          galleryImages.value = [];
           lightboxImage.value = url;
           lightboxTitle.value = title;
           nextTick(() => lucide.createIcons());
@@ -3095,7 +3193,13 @@
 
         // Respaldo local y actualización síncrona
         const persistCollection = (type, dataArray) => {
-          localStorage.setItem(`casados_${type}`, JSON.stringify(dataArray));
+          // Las fotos ya quedan en caché con Firestore; no se duplican en localStorage (límite ~5MB)
+          if (type === 'photos' && isFirebaseReady.value) return;
+          try {
+            localStorage.setItem(`casados_${type}`, JSON.stringify(dataArray));
+          } catch (e) {
+            console.warn(`No se pudo guardar copia local de ${type} (almacenamiento lleno)`);
+          }
         };
 
         // Inicialización / Semilla si la colección en la nube está vacía
@@ -3134,7 +3238,8 @@
             { type: 'expenses', ref: expenses },
             { type: 'ideas', ref: ideas },
             { type: 'surprises', ref: surprises },
-            { type: 'honeymoon', ref: honeymoon }
+            { type: 'honeymoon', ref: honeymoon },
+            { type: 'photos', ref: photos }
           ];
 
           collections.forEach(({ type, ref: listRef }) => {
@@ -3442,7 +3547,7 @@
         const openModal = (type) => {
           activeModal.value = type;
           editingId.value = null;
-          imageFileToUpload.value = null;
+          imageFileToUpload.value = null; resetPhotoState();
           imagePreview.value = null;
 
           if (type === 'space') formSpace.value = { name: '', category: 'ceremonia', status: 'Pendiente', price: null, deposit: null, paidBy: 'Ambos', address: '', phone: '', pros: '', cons: '', notes: '', imageUrl: '' };
@@ -3462,8 +3567,9 @@
         const editItem = (type, item) => {
           activeModal.value = type;
           editingId.value = item.id;
-          imageFileToUpload.value = null;
-          imagePreview.value = item.imageUrl || null;
+          imageFileToUpload.value = null; resetPhotoState();
+          imagePreview.value = null;
+          existingPhotos.value = photosOf(item).map(ph => ({ ...ph }));
 
           if (type === 'space') formSpace.value = { ...item };
           if (type === 'vendor') formVendor.value = { ...item };
@@ -3481,11 +3587,50 @@
         const closeModal = () => {
           activeModal.value = null;
           editingId.value = null;
-          imageFileToUpload.value = null;
+          imageFileToUpload.value = null; resetPhotoState();
           imagePreview.value = null;
         };
 
-        // Manejo de Archivo / Imagen
+        // Selección múltiple de fotos
+        const handlePhotosSelected = (event) => {
+          const files = Array.from(event.target.files || []);
+          files.forEach(file => {
+            const reader = new FileReader();
+            reader.onload = (e) => pendingPhotos.value.push({ file, preview: e.target.result });
+            reader.readAsDataURL(file);
+          });
+          event.target.value = '';
+        };
+        const removePendingPhoto = (i) => { pendingPhotos.value.splice(i, 1); };
+        const removeExistingPhoto = (ph) => {
+          existingPhotos.value = existingPhotos.value.filter(x => x.id !== ph.id);
+          if (ph.legacy) removeLegacyPhoto.value = true; else removedPhotoIds.value.push(ph.id);
+        };
+        const applyPhotoChanges = async (data) => {
+          if (removedPhotoIds.value.length) {
+            const gone = [...removedPhotoIds.value];
+            photos.value = photos.value.filter(ph => !gone.includes(ph.id));
+            gone.forEach(id => deleteDocumentFromFirestore('photos', id));
+          }
+          let failed = 0;
+          let i = 0;
+          for (const pp of pendingPhotos.value) {
+            try {
+              let url = await compressImageToBase64(pp.file);
+              if (url.length > 900000) url = await compressImageToBase64(pp.file, 900, 0.6);
+              const photo = { id: 'ph-' + Date.now() + '-' + Math.floor(Math.random() * 100000), ownerId: data.id, url, order: Date.now() + i++ };
+              photos.value.push(photo);
+              saveDocumentToFirestore('photos', photo);
+            } catch (err) {
+              console.warn('Fallo procesando una foto:', err);
+              failed++;
+            }
+          }
+          persistCollection('photos', photos.value);
+          if (failed) showToast(`${failed} foto(s) no se pudieron procesar`, '⚠️');
+        };
+
+        // Manejo de Archivo / Imagen (antiguo, una sola foto)
         const handleFileUpload = (event, targetType) => {
           const file = event.target.files[0];
           if (!file) return;
@@ -3542,22 +3687,14 @@
         // Guardado de Datos del Modal
         const saveModalData = async () => {
           isUploading.value = true;
-          let uploadedUrl = null;
-
-          if (imageFileToUpload.value) {
-            try {
-              uploadedUrl = await compressImageToBase64(imageFileToUpload.value);
-            } catch (err) {
-              console.warn("Fallo comprimiendo imagen a Base64:", err);
-            }
-          }
+          let photoTarget = null;
 
           const type = activeModal.value;
           const isEdit = !!editingId.value;
 
           if (type === 'space') {
             const data = { ...formSpace.value };
-            if (uploadedUrl) data.imageUrl = uploadedUrl;
+            photoTarget = data; if (removeLegacyPhoto.value) data.imageUrl = '';
             if (isEdit) {
               data.id = editingId.value;
               const idx = spaces.value.findIndex(s => s.id === editingId.value);
@@ -3576,7 +3713,7 @@
 
           if (type === 'vendor') {
             const data = { ...formVendor.value };
-            if (uploadedUrl) data.imageUrl = uploadedUrl;
+            photoTarget = data; if (removeLegacyPhoto.value) data.imageUrl = '';
             if (isEdit) {
               data.id = editingId.value;
               const idx = vendors.value.findIndex(v => v.id === editingId.value);
@@ -3655,7 +3792,7 @@
 
           if (type === 'idea') {
             const data = { ...formIdea.value };
-            if (uploadedUrl) data.imageUrl = uploadedUrl;
+            photoTarget = data; if (removeLegacyPhoto.value) data.imageUrl = '';
             if (isEdit) {
               data.id = editingId.value;
               const idx = ideas.value.findIndex(i => i.id === editingId.value);
@@ -3675,7 +3812,7 @@
           if (type === 'surprise') {
             if (newSurpriseTask.value.trim()) addSurpriseTask();
             const data = { ...formSurprise.value, tasks: (formSurprise.value.tasks || []).map(t => ({ ...t })) };
-            if (uploadedUrl) data.imageUrl = uploadedUrl;
+            photoTarget = data; if (removeLegacyPhoto.value) data.imageUrl = '';
             if (isEdit) {
               data.id = editingId.value;
               const idx = surprises.value.findIndex(x => x.id === editingId.value);
@@ -3691,7 +3828,7 @@
 
           if (type === 'honeymoon') {
             const data = { ...formHoneymoon.value };
-            if (uploadedUrl) data.imageUrl = uploadedUrl;
+            photoTarget = data; if (removeLegacyPhoto.value) data.imageUrl = '';
             if (isEdit) {
               data.id = editingId.value;
               const idx = honeymoon.value.findIndex(x => x.id === editingId.value);
@@ -3705,6 +3842,7 @@
             showToast('Luna de miel guardada', '✈️');
           }
 
+          if (photoTarget) await applyPhotoChanges(photoTarget);
           isUploading.value = false;
           closeModal();
           nextTick(() => lucide.createIcons());
@@ -3713,6 +3851,13 @@
         // Eliminación con confirmación y sincronización en Firestore
         const confirmDelete = (type, id, name) => {
           if (!confirm(`¿Eliminar "${name || 'este elemento'}" de CasaDos?`)) return;
+
+          const ownedPhotos = photos.value.filter(ph => ph.ownerId === id);
+          if (ownedPhotos.length) {
+            photos.value = photos.value.filter(ph => ph.ownerId !== id);
+            ownedPhotos.forEach(ph => deleteDocumentFromFirestore('photos', ph.id));
+            persistCollection('photos', photos.value);
+          }
 
           if (type === 'space') {
             spaces.value = spaces.value.filter(s => s.id !== id);
@@ -4070,12 +4215,13 @@
                 mujeres: sub.filter(g => g.gender === 'Mujer').length,
                 hombres: sub.filter(g => g.gender === 'Hombre').length,
                 sin: sub.filter(g => g.gender !== 'Mujer' && g.gender !== 'Hombre').length,
+                dudas: sub.filter(g => g.status === 'Dudas').length,
               };
             }).filter(ag => ag.key !== '' || ag.total > 0);
             const comunes = guests.value.filter(g => g.side !== 'Fran' && g.side !== 'Paloma').length;
             return {
               label: sc.label, emoji: sc.emoji, text: sc.text, border: sc.border,
-              total: list.length, ages,
+              total: list.length, dudas: list.filter(g => g.status === 'Dudas').length, ages,
               note: sc.label === 'Todos' && comunes > 0 ? `Incluye ${comunes} comunes (sin lado de Fran ni de Paloma)` : ''
             };
           });
@@ -4185,6 +4331,12 @@
         onMounted(() => {
           updateCountdown();
           setInterval(updateCountdown, 1000);
+          window.addEventListener('keydown', (e) => {
+            if (!lightboxImage.value) return;
+            if (e.key === 'Escape') lightboxImage.value = null;
+            if (e.key === 'ArrowRight') galleryGo(1);
+            if (e.key === 'ArrowLeft') galleryGo(-1);
+          });
           Vue.watch(currentTab, () => {
             nextTick(() => window.scrollTo({ top: 0, left: 0, behavior: 'auto' }));
           });
@@ -4312,6 +4464,8 @@
           getHoneymoonEmoji, formatDateRange, getPersonBadgeClass,
           guestBreakdown,
           guestNameFilter, guestTableFilter, clearGuestFilters, taskSearch, getCategoryRank,
+          photos, pendingPhotos, existingPhotos, handlePhotosSelected, removePendingPhoto, removeExistingPhoto,
+          photosOf, coverOf, openGallery, galleryGo, galleryImages, galleryIndex,
           getRankBadge
         };
       }
