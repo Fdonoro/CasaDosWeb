@@ -204,16 +204,11 @@
             
             <!-- Logo & Novios -->
             <div class="flex items-center gap-3 cursor-pointer" @click="currentTab = 'portada'">
-              <div class="w-10 h-10 md:w-12 md:h-12 rounded-2xl bg-eucalyptus-50 border border-eucalyptus-200 flex items-center justify-center text-eucalyptus-700 shadow-sm">
-                <span class="text-xl">🌿</span>
+              <div class="w-10 h-10 md:w-12 md:h-12 rounded-2xl bg-eucalyptus-50 border border-eucalyptus-200 flex items-center justify-center text-eucalyptus-700 shadow-sm overflow-hidden shrink-0">
+                <img v-if="appLogo" :src="appLogo" alt="Logo" class="w-full h-full object-contain p-0.5" />
+                <span v-else class="text-xl">🌿</span>
               </div>
-              <div>
-                <div class="flex items-center gap-2">
-                  <h1 class="text-xl md:text-2xl font-wedding font-bold text-eucalyptus-900 tracking-tight leading-tight">CasaDos</h1>
-                  
-                </div>
-                <p class="text-xs font-medium text-eucalyptus-600">Fran & Paloma</p>
-              </div>
+              <h1 class="text-lg md:text-2xl font-wedding font-bold text-eucalyptus-900 tracking-tight leading-tight">Boda Fran <span class="font-sans font-semibold">&amp;</span> Paloma</h1>
             </div>
 
             <!-- Contador Rápido en Header (Desktop) & Estado Firebase -->
@@ -1139,6 +1134,15 @@
                     </td>
                   </tr>
                 </tbody>
+                <tfoot v-if="combinedExpenseList.length > 0">
+                  <tr class="bg-eucalyptus-50/70 border-t-2 border-eucalyptus-200 font-bold">
+                    <td class="py-3 px-4 text-eucalyptus-900 uppercase tracking-wider" colspan="2">Total <span v-if="expenseSearch.trim()" class="normal-case font-normal text-[10px] text-gray-500">(según búsqueda)</span></td>
+                    <td class="py-3 px-4 text-right text-gray-900 font-wedding text-sm">{{ formatCurrency(expenseTableTotals.amount) }}</td>
+                    <td class="py-3 px-4 text-right text-mint-700">{{ formatCurrency(expenseTableTotals.paid) }}</td>
+                    <td class="py-3 px-4 text-right text-amber-700">{{ formatCurrency(expenseTableTotals.pending) }}</td>
+                    <td class="py-3 px-4" colspan="3"></td>
+                  </tr>
+                </tfoot>
               </table>
             </div>
 
@@ -1374,15 +1378,15 @@
           <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
             <div class="bg-white p-4 rounded-2xl border border-gray-100 shadow-xs text-center">
               <span class="text-[11px] text-gray-400 uppercase font-semibold">Total Invitados</span>
-              <div class="text-2xl font-bold font-wedding text-gray-900 mt-1">{{ guests.length }}</div>
-              <span class="text-[10px] text-gray-400 block">👩 Paloma {{ guestsPalomaCount }} · 🧔 Fran {{ guestsFranCount }}</span>
+              <div class="text-2xl font-bold font-wedding text-gray-900 mt-1">{{ guestsActiveCount }}<span v-if="guestsDudasCount > 0" class="ml-1 text-base font-semibold text-orange-500">({{ guestsDudasCount }})</span></div>
+              <span class="text-[10px] text-gray-400 block">👩 Paloma {{ guestsPalomaCount }}<span v-if="guestsPalomaDudas > 0" class="text-orange-500 font-semibold"> ({{ guestsPalomaDudas }})</span> · 🧔 Fran {{ guestsFranCount }}<span v-if="guestsFranDudas > 0" class="text-orange-500 font-semibold"> ({{ guestsFranDudas }})</span></span>
             </div>
             <div class="bg-white p-4 rounded-2xl border border-gray-100 shadow-xs text-center">
               <span class="text-[11px] text-mint-600 uppercase font-semibold">Confirmados</span>
               <div class="text-2xl font-bold font-wedding text-mint-700 mt-1">{{ confirmedGuestsCount }}</div>
             </div>
             <div class="bg-white p-4 rounded-2xl border border-gray-100 shadow-xs text-center">
-              <span class="text-[11px] text-amber-600 uppercase font-semibold">Pendientes</span>
+              <span class="text-[11px] text-amber-600 uppercase font-semibold">Sin responder</span>
               <div class="text-2xl font-bold font-wedding text-amber-700 mt-1">{{ pendingGuestsCount }}</div>
             </div>
             <div class="bg-white p-4 rounded-2xl border border-gray-100 shadow-xs text-center">
@@ -1391,31 +1395,30 @@
             </div>
           </div>
 
-          <!-- Recuento: Todos / Fran / Paloma -->
+          <!-- Recuento: Todos / Fran / Paloma (las dudas van aparte, en naranja) -->
           <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
             <div v-for="sc in guestBreakdown" :key="sc.label" class="bg-white p-4 rounded-2xl border shadow-xs" :class="sc.border">
               <div class="flex items-center justify-between">
                 <span class="text-xs uppercase font-bold tracking-wider" :class="sc.text">{{ sc.emoji }} {{ sc.label }}</span>
-                <span class="text-3xl font-bold font-wedding text-gray-900">{{ sc.total }}</span>
+                <span class="text-3xl font-bold font-wedding text-gray-900">{{ sc.total.n }}<span v-if="sc.total.d > 0" class="ml-1 text-lg font-semibold text-orange-500">({{ sc.total.d }})</span></span>
               </div>
-              <p class="mt-1 text-[11px] font-semibold" :class="sc.dudas > 0 ? 'text-orange-600' : 'text-gray-400'">🤔 {{ sc.dudas }} con dudas de invitar</p>
               <div class="mt-3 space-y-2">
                 <div v-for="ag in sc.ages" :key="ag.label" class="rounded-xl bg-gray-50 border border-gray-100 p-2.5">
                   <div class="flex items-center justify-between text-xs font-semibold text-gray-700">
                     <span>{{ ag.emoji }} {{ ag.label }}</span>
-                    <span class="text-base font-bold text-gray-900">{{ ag.total }}</span>
+                    <span class="text-base font-bold text-gray-900">{{ ag.total.n }}<span v-if="ag.total.d > 0" class="ml-1 text-sm font-semibold text-orange-500">({{ ag.total.d }})</span></span>
                   </div>
                   <div class="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-0.5 text-[11px] text-gray-600">
-                    <span>👩 {{ ag.mujeres }} mujeres</span>
-                    <span>👨 {{ ag.hombres }} hombres</span>
-                    <span v-if="ag.sin > 0" class="text-gray-400">❔ {{ ag.sin }} sin indicar</span>
-                    <span v-if="ag.dudas > 0" class="text-orange-600 font-semibold">🤔 {{ ag.dudas }} con dudas</span>
+                    <span>👩 {{ ag.mujeres.n }}<span v-if="ag.mujeres.d > 0" class="ml-0.5 font-semibold text-orange-500">({{ ag.mujeres.d }})</span> mujeres</span>
+                    <span>👨 {{ ag.hombres.n }}<span v-if="ag.hombres.d > 0" class="ml-0.5 font-semibold text-orange-500">({{ ag.hombres.d }})</span> hombres</span>
+                    <span v-if="ag.sin.n + ag.sin.d > 0" class="text-gray-400">❔ {{ ag.sin.n }}<span v-if="ag.sin.d > 0" class="ml-0.5 font-semibold text-orange-500">({{ ag.sin.d }})</span> sin indicar</span>
                   </div>
                 </div>
               </div>
               <p v-if="sc.note" class="text-[10px] text-gray-400 mt-2">{{ sc.note }}</p>
             </div>
           </div>
+          <p class="text-[11px] text-gray-400 -mt-3">El número en <span class="text-orange-500 font-semibold">(naranja)</span> son los invitados con dudas de invitar; no se suman al resto.</p>
 
           <!-- ================= VISTA 1: LISTADO DE INVITADOS ================= -->
           <div v-if="guestViewMode === 'list'" class="bg-white rounded-3xl p-6 border border-gray-100 shadow-soft space-y-4">
@@ -1434,7 +1437,7 @@
               <!-- Filtro Estado -->
               <div class="flex items-center gap-1.5 text-xs overflow-x-auto pb-1">
                 <button 
-                  v-for="st in ['Todos', 'Vamos a invitar', 'Dudas', 'Pendiente', 'Enviada', 'Confirmada', 'Rechazada']"
+                  v-for="st in ['Todos', 'Vamos a invitar', 'Dudas', 'Enviada', 'Confirmada', 'Rechazada']"
                   :key="st"
                   @click="guestStatusFilter = st"
                   :class="guestStatusFilter === st ? 'bg-eucalyptus-700 text-white font-semibold' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'"
@@ -1468,8 +1471,57 @@
               <button type="button" @click="clearGuestFilters" class="px-3 py-1.5 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold">Limpiar filtros</button>
             </div>
 
-            <!-- Tabla de Invitados -->
-            <div class="overflow-x-auto">
+            <!-- Vista móvil: tarjetas -->
+            <div class="md:hidden space-y-3">
+              <div 
+                v-for="guest in filteredGuests" 
+                :key="'m' + guest.id"
+                class="rounded-2xl border border-gray-100 bg-white shadow-xs overflow-hidden"
+                :class="guest.side === 'Paloma' ? 'border-l-4 border-l-pink-300' : guest.side === 'Fran' ? 'border-l-4 border-l-sky-300' : 'border-l-4 border-l-eucalyptus-300'"
+              >
+                <div class="p-3.5">
+                  <div class="flex items-start gap-3">
+                    <div class="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold shrink-0"
+                      :class="guest.side === 'Paloma' ? 'bg-pink-100 text-pink-700' : guest.side === 'Fran' ? 'bg-sky-100 text-sky-700' : 'bg-eucalyptus-100 text-eucalyptus-700'">
+                      {{ (guest.fullName || '?').trim().charAt(0).toUpperCase() }}
+                    </div>
+                    <div class="flex-1 min-w-0">
+                      <div class="flex items-start justify-between gap-2">
+                        <h4 class="text-sm font-bold text-gray-900 leading-snug break-words">{{ guest.fullName }}</h4>
+                        <span :class="getStatusBadgeClass(guest.status)" class="px-2 py-0.5 rounded-full text-[10px] font-bold whitespace-nowrap shrink-0">{{ guest.status }}</span>
+                      </div>
+                      <div class="mt-2 flex flex-wrap gap-1.5">
+                        <span :class="getPersonBadgeClass(guest.side)" class="px-2 py-0.5 rounded-full text-[10px] font-bold">{{ guest.side === 'Paloma' ? '👩 Paloma' : guest.side === 'Fran' ? '🧔 Fran' : '💍 Común' }}</span>
+                        <span v-if="guest.group" :class="guest.group === 'Familia' ? 'bg-rose-50 text-rose-700 border border-rose-200' : 'bg-indigo-50 text-indigo-700 border border-indigo-200'" class="px-2 py-0.5 rounded-full text-[10px] font-bold">{{ guest.group === 'Familia' ? '👪 Familia' : '🥂 Amigos' }}</span>
+                        <span v-if="guest.ageGroup" :class="guest.ageGroup === 'Niño' ? 'bg-yellow-50 text-yellow-700 border border-yellow-200' : 'bg-gray-100 text-gray-600 border border-gray-200'" class="px-2 py-0.5 rounded-full text-[10px] font-bold">{{ guest.ageGroup === 'Niño' ? '🧒 Niño' : '🧑 Adulto' }}</span>
+                        <span v-if="guest.gender" class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-gray-50 text-gray-700 border border-gray-200">{{ guest.gender === 'Mujer' ? '👩 Mujer' : '👨 Hombre' }}</span>
+                      </div>
+                      <div v-if="guest.menuAllergies" class="mt-2 inline-block px-2 py-1 rounded-lg text-[11px] font-semibold bg-purple-50 text-purple-700 border border-purple-100">⚠️ {{ guest.menuAllergies }}</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="flex items-center gap-2 px-3.5 py-2.5 bg-gray-50 border-t border-gray-100">
+                  <span class="text-sm">🪑</span>
+                  <select 
+                    v-model="guest.tableId" 
+                    @change="updateGuestTable(guest)"
+                    class="flex-1 min-w-0 bg-white border border-gray-200 rounded-lg px-2 py-1.5 text-xs text-gray-700 outline-none"
+                  >
+                    <option value="">(Sin mesa asignada)</option>
+                    <option v-for="t in tables" :key="t.id" :value="t.id">{{ t.name }}</option>
+                  </select>
+                  <button @click="editItem('guest', guest)" class="p-2 rounded-lg bg-white border border-gray-200 text-gray-500 hover:text-eucalyptus-700" title="Editar">
+                    <i data-lucide="edit-3" class="w-4 h-4"></i>
+                  </button>
+                  <button @click="confirmDelete('guest', guest.id, guest.fullName)" class="p-2 rounded-lg bg-white border border-gray-200 text-gray-500 hover:text-red-600" title="Eliminar">
+                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tabla de Invitados (tablet / escritorio) -->
+            <div class="hidden md:block overflow-x-auto">
               <table class="w-full text-left text-xs text-gray-600">
                 <thead class="bg-gray-50 text-gray-400 uppercase font-semibold border-b border-gray-100">
                   <tr>
@@ -2470,7 +2522,6 @@
               <div>
                 <label class="block text-xs font-semibold text-gray-700 mb-1">Estado Invitación</label>
                 <select v-model="formGuest.status" class="form-input">
-                  <option value="Pendiente">Pendiente</option>
                   <option value="Vamos a invitar">Vamos a invitar</option>
                   <option value="Dudas">Con dudas</option>
                   <option value="Enviada">Enviada</option>
@@ -2846,6 +2897,22 @@
         </div>
 
         <div class="space-y-5">
+          <!-- Logo -->
+          <div class="p-4 rounded-2xl bg-eucalyptus-50/70 border border-eucalyptus-100">
+            <label class="block text-xs font-bold text-eucalyptus-900 mb-1">🖼️ Logo</label>
+            <p class="text-[11px] text-eucalyptus-700 mb-3">Sube una imagen para usarla como logo en el menú. Se ve en todos los dispositivos.</p>
+            <div class="flex items-center gap-3">
+              <div class="w-14 h-14 rounded-2xl bg-white border border-eucalyptus-200 flex items-center justify-center overflow-hidden shrink-0">
+                <img v-if="appLogo" :src="appLogo" alt="Logo" class="w-full h-full object-contain p-0.5" />
+                <span v-else class="text-2xl">🌿</span>
+              </div>
+              <div class="flex-1 min-w-0">
+                <input type="file" accept="image/*" @change="handleLogoUpload($event)" class="w-full text-xs text-gray-500 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-white file:text-eucalyptus-700 hover:file:bg-eucalyptus-100" />
+                <button v-if="appLogo" type="button" @click="removeLogo" class="mt-2 text-[11px] font-semibold text-red-600 hover:text-red-700">Quitar logo</button>
+              </div>
+            </div>
+          </div>
+
           <!-- Fecha de la Boda -->
           <div class="p-4 rounded-2xl bg-eucalyptus-50/70 border border-eucalyptus-100">
             <label class="block text-xs font-bold text-eucalyptus-900 mb-1">📅 Fecha del Gran Día</label>
@@ -3038,6 +3105,7 @@
         const isSettingsOpen = ref(false);
         const toasts = ref([]);
         const weddingDate = ref(localStorage.getItem('casados_date') || '2027-09-18');
+        const appLogo = ref((() => { try { return localStorage.getItem('casados_logo') || ''; } catch (e) { return ''; } })());
         const totalBudget = ref(Number(localStorage.getItem('casados_budget')) || 32000);
 
         // --- 3. Colecciones de Datos ---
@@ -3272,6 +3340,10 @@
                 weddingDate.value = data.weddingDate;
                 localStorage.setItem('casados_date', data.weddingDate);
               }
+              if (data.logoUrl !== undefined) {
+                appLogo.value = data.logoUrl || '';
+                try { if (data.logoUrl) localStorage.setItem('casados_logo', data.logoUrl); else localStorage.removeItem('casados_logo'); } catch (e) {}
+              }
               if (data.totalBudget !== undefined) {
                 totalBudget.value = Number(data.totalBudget);
                 localStorage.setItem('casados_budget', data.totalBudget.toString());
@@ -3320,6 +3392,13 @@
           return (totalSpent.value / totalBudget.value) * 100;
         });
 
+        const expenseTableTotals = computed(() => {
+          const list = combinedExpenseList.value;
+          const amount = list.reduce((a, i) => a + (Number(i.amount) || 0), 0);
+          const paid = list.reduce((a, i) => a + (Number(i.paid) || 0), 0);
+          const pending = list.reduce((a, i) => a + Math.max(0, (Number(i.amount) || 0) - (Number(i.paid) || 0)), 0);
+          return { amount, paid, pending };
+        });
         const totalPaid = computed(() => baseExpenseList.value.reduce((sum, i) => sum + (Number(i.paid) || 0), 0));
         const totalPending = computed(() => baseExpenseList.value.reduce((sum, i) => sum + Math.max(0, (Number(i.amount) || 0) - (Number(i.paid) || 0)), 0));
         const paidByPerson = computed(() => {
@@ -3420,7 +3499,7 @@
           return guests.value.filter(g => g.status === 'Confirmada').length;
         });
         const pendingGuestsCount = computed(() => {
-          return guests.value.filter(g => g.status === 'Pendiente' || g.status === 'Enviada').length;
+          return guests.value.filter(g => g.status === 'Enviada').length;
         });
         const specialMenuGuestsCount = computed(() => {
           return guests.value.filter(g => g.menuAllergies && g.menuAllergies.trim().length > 0).length;
@@ -3537,7 +3616,7 @@
         const formSpace = ref({ name: '', category: 'ceremonia', status: 'Pendiente', price: null, deposit: null, paidBy: 'Ambos', address: '', phone: '', pros: '', cons: '', notes: '', imageUrl: '' });
         const formVendor = ref({ name: '', category: 'Fotógrafo', status: 'Presupuestado', price: null, deposit: null, paidBy: 'Ambos', phone: '', website: '', notes: '', imageUrl: '' });
         const formTask = ref({ name: '', category: 'General', priority: 'Media', assignedTo: 'Ambos', dueDate: '', status: 'Pendiente', notes: '' });
-        const formGuest = ref({ fullName: '', menuAllergies: '', status: 'Pendiente', side: 'Común', group: '', ageGroup: 'Adulto', gender: '', tableId: '', notes: '' });
+        const formGuest = ref({ fullName: '', menuAllergies: '', status: 'Vamos a invitar', side: 'Común', group: '', ageGroup: 'Adulto', gender: '', tableId: '', notes: '' });
         const formTable = ref({ name: '', capacity: 10, notes: '' });
         const formExpense = ref({ title: '', category: 'Varios', amount: null, paid: null, paidBy: 'Ambos', status: 'Pendiente', notes: '' });
         const formIdea = ref({ title: '', category: 'Decoración', link: '', description: '', imageUrl: '' });
@@ -3553,7 +3632,7 @@
           if (type === 'space') formSpace.value = { name: '', category: 'ceremonia', status: 'Pendiente', price: null, deposit: null, paidBy: 'Ambos', address: '', phone: '', pros: '', cons: '', notes: '', imageUrl: '' };
           if (type === 'vendor') formVendor.value = { name: '', category: 'Fotógrafo', status: 'Presupuestado', price: null, deposit: null, paidBy: 'Ambos', phone: '', website: '', notes: '', imageUrl: '' };
           if (type === 'task') formTask.value = { name: '', category: 'General', priority: 'Media', assignedTo: 'Ambos', dueDate: '', status: 'Pendiente', notes: '' };
-          if (type === 'guest') formGuest.value = { fullName: '', menuAllergies: '', status: 'Pendiente', side: 'Común', group: '', ageGroup: 'Adulto', gender: '', tableId: '', notes: '' };
+          if (type === 'guest') formGuest.value = { fullName: '', menuAllergies: '', status: 'Vamos a invitar', side: 'Común', group: '', ageGroup: 'Adulto', gender: '', tableId: '', notes: '' };
           if (type === 'table') formTable.value = { name: '', capacity: 10, notes: '' };
           if (type === 'expense') formExpense.value = { title: '', category: 'Varios', amount: null, paid: null, paidBy: 'Ambos', status: 'Pendiente', notes: '' };
           if (type === 'idea') formIdea.value = { title: '', category: 'Decoración', link: '', description: '', imageUrl: '' };
@@ -4012,6 +4091,58 @@
           nextTick(() => lucide.createIcons());
         };
 
+        // Logo: se reduce a 256px (PNG para conservar transparencia) y se guarda en la configuración compartida
+        const resizeLogo = (file) => new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onerror = reject;
+          reader.onload = (e) => {
+            const img = new Image();
+            img.onerror = reject;
+            img.onload = () => {
+              const max = 256;
+              const ratio = Math.min(1, max / Math.max(img.width, img.height));
+              const w = Math.max(1, Math.round(img.width * ratio));
+              const h = Math.max(1, Math.round(img.height * ratio));
+              const canvas = document.createElement('canvas');
+              canvas.width = w; canvas.height = h;
+              const ctx = canvas.getContext('2d');
+              ctx.drawImage(img, 0, 0, w, h);
+              let url = canvas.toDataURL('image/png');
+              if (url.length > 400000) {
+                ctx.globalCompositeOperation = 'destination-over';
+                ctx.fillStyle = '#FFFFFF';
+                ctx.fillRect(0, 0, w, h);
+                url = canvas.toDataURL('image/jpeg', 0.85);
+              }
+              resolve(url);
+            };
+            img.src = e.target.result;
+          };
+          reader.readAsDataURL(file);
+        });
+        const saveLogoEverywhere = (url) => {
+          appLogo.value = url;
+          try { if (url) localStorage.setItem('casados_logo', url); else localStorage.removeItem('casados_logo'); } catch (e) {}
+          if (isFirebaseReady.value && db) {
+            db.collection('casados_config').doc('wedding').set({
+              logoUrl: url,
+              updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+            }, { merge: true }).catch(() => {});
+          }
+        };
+        const handleLogoUpload = async (event) => {
+          const file = event.target.files && event.target.files[0];
+          if (!file) return;
+          try {
+            saveLogoEverywhere(await resizeLogo(file));
+            showToast('Logo actualizado', '🖼️');
+          } catch (err) {
+            showToast('No se pudo cargar esa imagen', '⚠️');
+          }
+          event.target.value = '';
+        };
+        const removeLogo = () => { saveLogoEverywhere(''); showToast('Logo quitado', '🖼️'); };
+
         const saveWeddingDate = () => {
           localStorage.setItem('casados_date', weddingDate.value);
           updateCountdown();
@@ -4205,31 +4336,41 @@
             { key: 'Niño', label: 'Niños', emoji: '🧒' },
             { key: '', label: 'Sin indicar edad', emoji: '❔' },
           ];
+          const isDuda = g => g.status === 'Dudas';
+          const isMujer = g => g.gender === 'Mujer';
+          const isHombre = g => g.gender === 'Hombre';
+          const isSin = g => g.gender !== 'Mujer' && g.gender !== 'Hombre';
+          // Las dudas NO se suman al recuento: van aparte, en naranja entre paréntesis.
+          const count = (list, pred) => ({ n: list.filter(g => !isDuda(g) && pred(g)).length, d: list.filter(g => isDuda(g) && pred(g)).length });
           return scopes.map(sc => {
             const list = guests.value.filter(sc.match);
+            const tot = count(list, () => true);
             const ages = ageGroups.map(ag => {
               const sub = list.filter(g => (g.ageGroup || '') === ag.key);
               return {
                 ...ag,
-                total: sub.length,
-                mujeres: sub.filter(g => g.gender === 'Mujer').length,
-                hombres: sub.filter(g => g.gender === 'Hombre').length,
-                sin: sub.filter(g => g.gender !== 'Mujer' && g.gender !== 'Hombre').length,
-                dudas: sub.filter(g => g.status === 'Dudas').length,
+                total: count(sub, () => true),
+                mujeres: count(sub, isMujer),
+                hombres: count(sub, isHombre),
+                sin: count(sub, isSin),
               };
-            }).filter(ag => ag.key !== '' || ag.total > 0);
-            const comunes = guests.value.filter(g => g.side !== 'Fran' && g.side !== 'Paloma').length;
+            }).filter(ag => ag.key !== '' || ag.total.n + ag.total.d > 0);
+            const comunes = guests.value.filter(g => g.side !== 'Fran' && g.side !== 'Paloma' && !isDuda(g)).length;
             return {
               label: sc.label, emoji: sc.emoji, text: sc.text, border: sc.border,
-              total: list.length, dudas: list.filter(g => g.status === 'Dudas').length, ages,
+              total: tot, ages,
               note: sc.label === 'Todos' && comunes > 0 ? `Incluye ${comunes} comunes (sin lado de Fran ni de Paloma)` : ''
             };
           });
         });
 
         // --- Invitados: lado Paloma / Fran ---
-        const guestsPalomaCount = computed(() => guests.value.filter(g => g.side === 'Paloma').length);
-        const guestsFranCount = computed(() => guests.value.filter(g => g.side === 'Fran').length);
+        const guestsPalomaCount = computed(() => guests.value.filter(g => g.side === 'Paloma' && g.status !== 'Dudas').length);
+        const guestsFranCount = computed(() => guests.value.filter(g => g.side === 'Fran' && g.status !== 'Dudas').length);
+        const guestsPalomaDudas = computed(() => guests.value.filter(g => g.side === 'Paloma' && g.status === 'Dudas').length);
+        const guestsFranDudas = computed(() => guests.value.filter(g => g.side === 'Fran' && g.status === 'Dudas').length);
+        const guestsActiveCount = computed(() => guests.value.filter(g => g.status !== 'Dudas').length);
+        const guestsDudasCount = computed(() => guests.value.filter(g => g.status === 'Dudas').length);
 
         // --- Sorpresas ---
         const filteredSurprises = computed(() => surprises.value.filter(s =>
@@ -4331,6 +4472,13 @@
         onMounted(() => {
           updateCountdown();
           setInterval(updateCountdown, 1000);
+          Vue.watch(guests, (list) => {
+            let changed = false;
+            list.forEach(g => {
+              if (g.status === 'Pendiente') { g.status = 'Vamos a invitar'; saveDocumentToFirestore('guests', g); changed = true; }
+            });
+            if (changed) persistCollection('guests', list);
+          }, { immediate: true });
           window.addEventListener('keydown', (e) => {
             if (!lightboxImage.value) return;
             if (e.key === 'Escape') lightboxImage.value = null;
@@ -4457,7 +4605,7 @@
           getPriorityBadgeClass,
           surprises, honeymoon, formSurprise, formHoneymoon,
           totalPaid, totalPending, paidByPerson,
-          guestSideFilter, guestsPalomaCount, guestsFranCount,
+          guestSideFilter, guestsPalomaCount, guestsFranCount, guestsPalomaDudas, guestsFranDudas, guestsActiveCount, guestsDudasCount,
           newSurpriseTask, addSurpriseTask, removeSurpriseTask, toggleSurpriseTask, surpriseTasksDone,
           surpriseRecipientFilter, surpriseStatusFilter, filteredSurprises, surpriseStats,
           honeymoonTypeFilter, honeymoonStatusFilter, filteredHoneymoon, honeymoonStats,
@@ -4466,6 +4614,7 @@
           guestNameFilter, guestTableFilter, clearGuestFilters, taskSearch, getCategoryRank,
           photos, pendingPhotos, existingPhotos, handlePhotosSelected, removePendingPhoto, removeExistingPhoto,
           photosOf, coverOf, openGallery, galleryGo, galleryImages, galleryIndex,
+          appLogo, handleLogoUpload, removeLogo, expenseTableTotals,
           getRankBadge
         };
       }
